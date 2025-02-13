@@ -1,0 +1,11 @@
+php_value auto_prepend_file "environment.php"
+
+RewriteEngine On
+
+# Set the base directory (adjust if needed)
+RewriteBase /elibrary/
+
+# Redirect everything except existing files and directories to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?page=$1 [QSA,L]
