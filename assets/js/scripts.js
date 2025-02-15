@@ -6,8 +6,7 @@
     // 
 // Scripts
 // 
-
-window.addEventListener('DOMContentLoaded', event => {
+$(function(){
 
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
@@ -23,4 +22,22 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+    $(".toggle-loader").click(function(e){
+        // e.preventDefault();
+        console.log("clicked")
+        $(this).prop("disabled", true);
+        $(this).addClass("disabled");
+        $(this).prepend(`<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden"></span</div>`);
+        $(this).closest("form").submit();
+    });
+
+    const datatablesSimple = $('.data-table');
+
+    if (datatablesSimple) {
+        new simpleDatatables.DataTable(datatablesSimple);
+    }
 });
+
+
+
+
