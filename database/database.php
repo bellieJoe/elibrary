@@ -218,4 +218,15 @@ class Database {
             Response::redirectToError(500);
         }
     }
+
+    public function toggleBookStatus($id, $status) {
+        try {
+            $stmt = $this->con->prepare("UPDATE books SET is_active = ? WHERE id = ?");
+            $stmt->execute([$status, $id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
 }

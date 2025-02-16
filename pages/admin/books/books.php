@@ -85,7 +85,7 @@ $response = Response::getData();
                                     <td><?=$value->description?></td>
                                     <td class="text-center">
                                         <div class="form-check form-switch d-flex justify-content-center">
-                                            <input class="form-check-input" type="checkbox" <?= $value->is_active ? 'checked' : '' ?> onclick="confirmToggle(this, '<?=APP_URL.'admin/books/toggle-status'?>', <?=$value->id?>, <?=$value->is_active == 1 ? 0 : 1?>, 'Are you sure you want to <?=$value->is_active == 1 ? 'deactivate' : 'activate'?> this genre status?')">
+                                            <input class="form-check-input" type="checkbox" <?= $value->is_active ? 'checked' : '' ?> onclick="confirmToggle(this, '<?=APP_URL.'admin/books/toggle-status'?>', <?=$value->id?>, <?=$value->is_active == 1 ? 0 : 1?>, 'Are you sure you want to <?=$value->is_active == 1 ? 'deactivate' : 'activate'?> this book status?')">
                                         </div>
                                     </td>
                                     <td class='text-center'>

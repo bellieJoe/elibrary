@@ -138,18 +138,18 @@ class BookController extends Controller {
     
             $req = $this->postRequest();
     
-            $res = $this->db->toggleGenreStatus($req->id, $req->status);
+            $res = $this->db->toggleBookStatus($req->id, $req->status);
             if(!$res) {
                 Response::redirectFail(
-                    APP_URL . "admin/genres",
+                    APP_URL . "admin/books",
                     500,
-                    "Unexpected error occured while updating the genre status."
+                    "Unexpected error occured while updating the book status."
                 );
             }
             Response::redirectSuccess(
-                APP_URL . "admin/genres",
+                APP_URL . "admin/books",
                 200,
-                "Genre status updated successfully"
+                "Book status updated successfully"
             );
         } catch (Exception $e) {
             Response::redirectToError(500);
