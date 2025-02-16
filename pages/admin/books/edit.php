@@ -5,7 +5,7 @@
 <h1 class="mt-4">Books</h1>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item">
-        <a href="<?=APP_URL?>admin/books">Genres</a>
+        <a href="<?=APP_URL?>admin/books">Books</a>
     </li>
     <li class="breadcrumb-item active">
         Edit Book

@@ -16,16 +16,16 @@ class GenreController extends Controller {
             $page = property_exists($req, "_page") ? $req->_page : 1;
             $name = property_exists($req, "name") ? $req->name : "";
             $code = property_exists($req, "code") ? $req->code : "";
-            $sortBy = property_exists($req, "sortBy") ? $req->sortBy : null;
-            $sort = property_exists($req, "sort") ? $req->sort : null;
+            $sortBy = property_exists($req, "sortBy") ? $req->sortBy : "name";
+            $sort = property_exists($req, "sort") ? $req->sort : "asc";
             $genres = $this->db->paginateGenre($name, $code, $page, 10, $sortBy, $sort);
             Response::view("admin/genres/genres", [
                 "genres" => $genres,
                 "_page" => $page
             ]);
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -34,8 +34,8 @@ class GenreController extends Controller {
             Middleware::isAuth(true);
             Response::view("admin/genres/create");
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -61,8 +61,8 @@ class GenreController extends Controller {
                 "Genre deleted successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -84,8 +84,8 @@ class GenreController extends Controller {
                 "Genre created successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -101,8 +101,8 @@ class GenreController extends Controller {
                 "genre" => $genre
             ]);
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -127,8 +127,8 @@ class GenreController extends Controller {
             );
 
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -152,8 +152,8 @@ class GenreController extends Controller {
                 "Genre status updated successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -165,8 +165,8 @@ class GenreController extends Controller {
             echo json_encode($genres);
             exit();
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 }

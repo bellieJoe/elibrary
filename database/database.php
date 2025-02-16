@@ -143,12 +143,12 @@ class Database {
     /**
      * BOOKS
      */
-    public function paginateBook($name = "", $author = "", $page = 1, $limit = 10, $sortBy = null, $sort = null) {
+    public function paginateBook($name = "", $author = "", $genre_id = "", $page = 1, $limit = 10, $sortBy = null, $sort = null) {
         try {
             $q = "
             SELECT books.id, books.name, books.author, books.description, books.is_active, genres.name AS genre FROM books
             LEFT JOIN genres ON genres.id = books.genre_id
-            WHERE books.name LIKE ? AND books.author LIKE ? 
+            WHERE books.name LIKE ? AND books.author LIKE ?AND books.genre_id LIKE ?
             GROUP BY books.id
             ";
 
@@ -163,8 +163,9 @@ class Database {
             // Bind parameters correctly
             $stmt->bindValue(1, "%$name%", PDO::PARAM_STR);
             $stmt->bindValue(2, "%$author%", PDO::PARAM_STR);
-            $stmt->bindValue(3, ($page - 1) * $limit, PDO::PARAM_INT);
-            $stmt->bindValue(4, $limit, PDO::PARAM_INT);
+            $stmt->bindValue(3, "%$genre_id%", PDO::PARAM_STR);
+            $stmt->bindValue(4, ($page - 1) * $limit, PDO::PARAM_INT);
+            $stmt->bindValue(5, $limit, PDO::PARAM_INT);
     
             $stmt->execute();
             
@@ -224,6 +225,64 @@ class Database {
             $stmt = $this->con->prepare("UPDATE books SET is_active = ? WHERE id = ?");
             $stmt->execute([$status, $id]);
             return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    /**
+     * ARRANGEMENTS
+     */
+    public function storeArrangement($name, $description, $map, $shelves){
+        try {
+            $this->con->beginTransaction();
+
+            $stmt = $this->con->prepare("INSERT INTO arrangements (name, description, map) VALUES (?, ?, ?)");
+            $stmt->execute([$name, $description, $map]);
+            $insertedId = $this->con->lastInsertId();
+
+            $placeholders = implode(',', array_fill(0, count($shelves), '(?, ?)'));
+            $values = [];
+            foreach ($shelves as $shelve) {
+                $values[] = $insertedId;
+                $values[] = $shelve;
+            }
+            $stmt = $this->con->prepare("INSERT INTO shelves (arrangement_id, name) VALUES $placeholders");
+            $stmt->execute($values);
+
+            $this->con->commit();
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function paginateArrangement($name = "", $page = 1, $limit = 10, $sortBy = null, $sort = null) {
+        try {
+            $q = "
+            SELECT arrangements.id, arrangements.name, arrangements.description, arrangements.is_active, COUNT(shelves.id) AS shelve_count FROM arrangements
+            LEFT JOIN shelves ON shelves.arrangement_id = arrangements.id 
+            WHERE arrangements.name LIKE ? 
+            GROUP BY arrangements.id
+            ";
+
+            if($sortBy != null && $sort != null) {
+                $q .= " ORDER BY $sortBy $sort";
+            }
+
+            $q .= " LIMIT ?, ?";
+
+            $stmt = $this->con->prepare($q);
+            
+            $stmt->bindValue(1, "%$name%", PDO::PARAM_STR);
+            $stmt->bindValue(2, ($page - 1) * $limit, PDO::PARAM_INT);
+            $stmt->bindValue(3, $limit, PDO::PARAM_INT);
+    
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);

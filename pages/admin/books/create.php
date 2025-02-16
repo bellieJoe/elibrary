@@ -22,20 +22,20 @@
             <div class="row">
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="name">Book Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" id="name" class="form-control">
+                    <input type="text" name="name" id="name" class="form-control" required>
                 </div>
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="author">Book Author <span class="text-danger">*</span></label>
-                    <input type="text" name="author" id="author" class="form-control">
+                    <input type="text" name="author" id="author" class="form-control" required>
                 </div>
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="genre">Genre <span class="text-danger">*</span></label>
-                    <select type="text" name="genre" id="genre" class="form-control select2">
+                    <select type="text" name="genre" id="genre" class="form-control select2" required>
                     </select>
                 </div>
                 <div class="col-12 col-md-8 col-sm-6 mb-2 ">
                     <label for="description">Book Description <span class="text-danger">*</span></label>
-                    <textarea  name="description" id="description" class="form-control"></textarea>
+                    <textarea  name="description" id="description" class="form-control" ></textarea>
                 </div>
                 <div class="col-12 col-md-8 col-sm-6">
                     <button class="btn btn-primary toggle-loader" type="submit"><i class="fas fa-save me-1"></i>Save</button>

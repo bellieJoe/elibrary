@@ -22,11 +22,11 @@
             <div class="row">
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="name">Genre Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" id="name" class="form-control">
+                    <input type="text" name="name" id="name" class="form-control" required>
                 </div>
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="code">Genre Code <span class="text-danger">*</span></label>
-                    <input type="text" name="code" id="code" class="form-control">
+                    <input type="text" name="code" id="code" class="form-control" required>
                 </div>
                 <div class="col-12 col-md-8 col-sm-6 mb-2 ">
                     <label for="description">Genre Description <span class="text-danger">*</span></label>

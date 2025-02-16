@@ -29,7 +29,7 @@
                 </a>
                 <div class="collapse" id="collapsePages" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="layout-static.html">Setups</a>    
+                        <a class="nav-link" href="<?= APP_URL ?>admin/shelves/arrangements">Arrangements</a>    
                     </nav>
                 </div>
 

@@ -3,10 +3,12 @@
 require_once ROOT_PATH . "controllers/GenreController.php";
 require_once ROOT_PATH . "controllers/AuthController.php";
 require_once ROOT_PATH . "controllers/BookController.php";
+require_once ROOT_PATH . "controllers/ArrangementController.php";
 
 $genreController = new GenreController();
 $authController = new AuthController();
 $bookController = new BookController();
+$arrangementController = new ArrangementController();
 
 // // Get the current request URI
 // $requestUri = trim($_SERVER['REQUEST_URI'], '/');
@@ -60,6 +62,15 @@ switch ($uri) {
      */
     case "admin/shelves":
         include __DIR__ . "/../pages/admin/shelves.php";
+        break;
+    case "admin/shelves/arrangements":
+        $arrangementController->index();
+        break;
+    case "admin/shelves/arrangements/create":
+        $arrangementController->create();
+        break;
+    case "admin/shelves/arrangements/store":
+        $arrangementController->store();
         break;
 
     /*

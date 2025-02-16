@@ -8,7 +8,10 @@ class Misc
     }
 
     public static function sanitizeInput($input) {
-        return htmlspecialchars(strip_tags($input));
+        if (is_array($input)) {
+            return array_map(fn($value) => self::sanitizeInput($value), $input); 
+        }
+        return htmlspecialchars(strip_tags($input), ENT_QUOTES, 'UTF-8');
     }
 
     public static function logError($message, $file = null, $line = null) {

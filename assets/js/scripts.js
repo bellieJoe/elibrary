@@ -25,10 +25,19 @@ $(function(){
     $(".toggle-loader").click(function(e){
         // e.preventDefault();
         console.log("clicked")
+            let form = $(this).closest("form");
+
+        // If form is not valid, let the browser handle validation
+        if (!form[0].checkValidity()) {
+            form[0].reportValidity();  // Show validation messages
+            return;  // Stop execution
+        }
+
         $(this).prop("disabled", true);
         $(this).addClass("disabled");
         $(this).prepend(`<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden"></span</div>`);
-        $(this).closest("form").submit();
+
+        form.submit();
     });
 
     const datatablesSimple = $('.data-table');

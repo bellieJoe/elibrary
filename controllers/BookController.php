@@ -16,16 +16,17 @@ class BookController extends Controller {
             $page = property_exists($req, "_page") ? $req->_page : 1;
             $name = property_exists($req, "name") ? $req->name : "";
             $author = property_exists($req, "author") ? $req->author : "";
+            $genre_id = property_exists($req, "genre_id") ? $req->genre_id : "";
             $sortBy = property_exists($req, "sortBy") ? $req->sortBy : null;
             $sort = property_exists($req, "sort") ? $req->sort : null;
-            $books = $this->db->paginateBook($name, $author, $page, 10, $sortBy, $sort);
+            $books = $this->db->paginateBook($name, $author, $genre_id, $page, 10, $sortBy, $sort);
             Response::view("admin/books/books", [
                 "books" => $books,
                 "_page" => $page
             ]);
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -34,8 +35,8 @@ class BookController extends Controller {
             Middleware::isAuth(true);
             Response::view("admin/books/create");
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -61,8 +62,8 @@ class BookController extends Controller {
                 "Book deleted successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -84,8 +85,8 @@ class BookController extends Controller {
                 "Book created successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -101,8 +102,8 @@ class BookController extends Controller {
                 "book" => $book
             ]);
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -127,8 +128,8 @@ class BookController extends Controller {
             );
 
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 
@@ -152,8 +153,8 @@ class BookController extends Controller {
                 "Book status updated successfully"
             );
         } catch (Exception $e) {
-            Response::redirectToError(500);
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
         }
     }
 }

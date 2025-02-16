@@ -32,6 +32,15 @@
                     <input type="text" name="${option.key}" id="${option.key}" value="${option.value}"  class="form-control filter-input">
                 </div>`)
                 break;
+            case "select2":
+                $("#filterInputs").append(`<div class="mb-2">
+                    <label for="${option.key}">${option.label}</label>
+                    <select name="${option.key}" id="${option.key}" class="form-select filter-input filterSelect2" data-url="${option.url}">
+                      ${generateSelect2Options(option.url, option.value, `#${option.key}`)}
+                    </select>
+                </div>`)
+                console.log(generateSelect2Options(option.url, option.value), "test");
+              break;
             case 'select':
                 $("#filterInputs").append(`<div class="mb-2">
                     <label for="${option.key}">${option.label}</label>
@@ -47,6 +56,33 @@
           }
         })
         $filterModal.modal("show");
+
+        $(".filterSelect2").each(function() {
+            $(this).select2({
+                width: "100%",
+                placeholder: "Select",
+                theme: "bootstrap-5",
+                ajax: {
+                    url: $(this).data("url"),
+                    dataType: "json",
+                    delay: 250,
+                    data : function(params) {
+                        var query = {
+                            keyword: params.term,
+                            type: 'query'
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },  
+                    cache: true
+                }
+            });
+        })
     }
 
     function clearFilter(e) {
@@ -56,5 +92,23 @@
       form = $filterModal.find("form");
       form.find(".filter-input").val(""); 
       form.submit(); 
+    }
+ 
+    function generateSelect2Options(url, selected, element) {
+        $data = [];
+        $.ajax({
+            url: url,
+            data: {type: "query", keyword: ""},
+            dataType: "json",
+            success: function (data) {
+              $el = $(element);
+              $el.html("");
+              $el.append(`<option value="">All</option>`);
+              $el.append(data.map((val) => {
+                  return `<option value="${val.id}" ${selected == val.id ? 'selected' : ''}>${val.text}</option>`
+              }));
+            }
+        });
+        return $data;
     }
 </script>

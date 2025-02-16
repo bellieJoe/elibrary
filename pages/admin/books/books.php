@@ -51,6 +51,13 @@ $response = Response::getData();
                         label : 'Author',
                         value : '<?=isset($_GET['author']) ? $_GET['author'] : ''?>'
                     },
+                    {
+                        type : 'select2',
+                        key : 'genre_id',
+                        label : 'Genre',
+                        value : '<?=isset($_GET['genre_id']) ? $_GET['genre_id'] : ''?>',
+                        url : '<?=APP_URL?>api/genres/search',
+                    },
                 ])"
                 >
                 <i class="fas fa-filter me-1"></i>
