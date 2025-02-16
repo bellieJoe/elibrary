@@ -9,6 +9,10 @@
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="<?=APP_URL?>assets/css/styles.css" rel="stylesheet" />
     <link href="<?=APP_URL?>assets/css/sweetAlertBootstrap.css" rel="stylesheet" />
+    <link href="<?=APP_URL?>assets/css/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="<?=APP_URL?>assets/css/select2.min.css" rel="stylesheet" />
+    <link href="<?=APP_URL?>assets/css/select2-bootstrap-5-theme.rtl.min.css" rel="stylesheet" />
     <script src="<?=APP_URL?>assets/js/jquery.js"></script>
+    <script src="<?=APP_URL?>assets/js/select2.full.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>

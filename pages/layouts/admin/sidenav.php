@@ -19,7 +19,7 @@
                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="<?= APP_URL ?>admin/genres">Genres</a>
-                        <a class="nav-link" href="layout-sidenav-light.html">Books</a>
+                        <a class="nav-link" href="<?= APP_URL ?>admin/books">Books</a>
                     </nav>
                 </div>
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -32,6 +32,11 @@
                         <a class="nav-link" href="layout-static.html">Setups</a>    
                     </nav>
                 </div>
+
+                <a class="nav-link" href="<?= APP_URL ?>logout">
+                    <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    Logout
+                </a>
             </div>
         </div>
         <div class="sb-sidenav-footer">

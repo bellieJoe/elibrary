@@ -13,7 +13,7 @@
                 <h3 class="card-title text-center text-primary glow-text">E-Library</h3>
             </div>
             <div class="card-body">
-                <form>
+                <form action="<?=APP_URL?>tryLogin" method="POST">
                     <div class="form-floating mb-3">
                         <input class="form-control" id="inputUsername" name="username" type="username" placeholder="Username" />
                         <label for="inputEmail">Username</label>
@@ -23,7 +23,7 @@
                         <label for="inputPassword">Password</label>
                     </div>
                     <div class="d-flex align-items-center justify-content-end mt-4 mb-0">
-                        <a class="btn btn-primary" href="index.html">Login</a>
+                        <button class="btn btn-primary toggle-loader" type="submit">Login</button>
                     </div>
                 </form>
             </div>

@@ -16,6 +16,9 @@
         <script src="<?=APP_URL?>assets/demo/chart-bar-demo.js"></script>
 
         <?php include (ROOT_PATH.'pages/components/confirmDelete.php'); ?>
+        <?php include (ROOT_PATH.'pages/components/confirmToggle.php'); ?>
+        <?php include (ROOT_PATH.'pages/components/sortModal.php'); ?>
+        <?php include (ROOT_PATH.'pages/components/filterModal.php'); ?>
         
         
     </body>

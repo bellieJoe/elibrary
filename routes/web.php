@@ -1,8 +1,12 @@
 <?php
 
 require_once ROOT_PATH . "controllers/GenreController.php";
+require_once ROOT_PATH . "controllers/AuthController.php";
+require_once ROOT_PATH . "controllers/BookController.php";
 
 $genreController = new GenreController();
+$authController = new AuthController();
+$bookController = new BookController();
 
 // // Get the current request URI
 // $requestUri = trim($_SERVER['REQUEST_URI'], '/');
@@ -20,9 +24,6 @@ $projectFolder = basename(ROOT_PATH);
 // Remove project folder from URI if applicable
 $uri = str_replace("$projectFolder/", "", $requestUri);
 
-
-
-
 switch ($uri) {
     case "":
     case null:
@@ -32,14 +33,25 @@ switch ($uri) {
         include __DIR__ . "/../pages/"."$uri".".php";
         break;
     case 'test':
-        include __DIR__ . "/../pages/"."$uri".".php";
+        echo password_hash("password", PASSWORD_DEFAULT);
         break;
 
-    case "login":
-        include __DIR__ . "/../pages/auth/login.php";
-        break;
     case "admin":
+        Middleware::isAuth(true);
         include __DIR__ . "/../pages/admin/dashboard.php";
+        break;
+
+    /**
+     * Auth
+     */
+    case "login":
+        $authController->login();
+        break;
+    case "logout":
+        $authController->logout();
+        break;
+    case "tryLogin":
+        $authController->tryLogin();
         break;
 
 
@@ -65,9 +77,49 @@ switch ($uri) {
     case "admin/genres/delete":
         $genreController->delete();
         break;
+    case "admin/genres/edit":
+        $genreController->edit();
+        break;
+    case "admin/genres/update":
+        $genreController->update();
+        break;
+    case "admin/genres/toggle-status":
+        $genreController->toggleStatus();
+        break;
     
+    /*
+     * Books 
+     */
+    case "admin/books":
+        $bookController->index();
+        break;
+    case "admin/books/create":
+        $bookController->create();
+        break;
+    case "admin/books/store":
+        $bookController->store();
+        break;
+    case "admin/books/delete":
+        $bookController->delete();
+        break;
+    case "admin/books/edit":
+        $bookController->edit();
+        break;
+    case "admin/books/update":
+        $bookController->update();
+        break;
+    case "admin/books/toggle-status":
+        $bookController->toggleStatus();
+        break;
 
-    
+    /**
+     * API
+     */
+    case "api/genres/search":
+        $genreController->search();
+        break;
+
+
     default:
         Response::redirectToError(404);
         break;
