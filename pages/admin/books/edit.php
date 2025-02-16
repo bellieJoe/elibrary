@@ -1,12 +1,14 @@
 <?php include (ROOT_PATH.'pages/layouts/admin/master-top.php'); ?>
 
+<?php $data = Response::getData(); ?>
+
 <h1 class="mt-4">Books</h1>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item">
-        <a href="<?=APP_URL?>admin/books">Books</a>
+        <a href="<?=APP_URL?>admin/books">Genres</a>
     </li>
     <li class="breadcrumb-item active">
-        Add Book
+        Edit Book
     </li>
 </ol>
 
@@ -14,28 +16,30 @@
 <div class="card mb-4">
     <div class="card-header">
         <i class="fas fa-table me-1"></i>
-        Create Book Form
+        Edit Book Form
     </div>
     
     <div class="card-body">
-        <form action="<?=APP_URL?>admin/books/store" method="post">
+        <form action="<?=APP_URL?>admin/books/update" method="post">
+            <input type="hidden" name="id" value="<?=$data->book->id?>">
             <div class="row">
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="name">Book Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" id="name" class="form-control">
+                    <input type="text" name="name" id="name" class="form-control" value="<?=$data->book->name?>">
                 </div>
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="author">Book Author <span class="text-danger">*</span></label>
-                    <input type="text" name="author" id="author" class="form-control">
+                    <input type="text" name="author" id="author" class="form-control" value="<?=$data->book->author?>">
                 </div>
                 <div class="col-12 col-md-4 col-sm-6 mb-2 ">
                     <label for="genre">Genre <span class="text-danger">*</span></label>
-                    <select type="text" name="genre" id="genre" class="form-control select2">
+                    <select type="text" name="genre" id="genre" class="form-control">
+                        <option value="<?=$data->book->genre_id?>" selected><?=$data->book->genre?></option>
                     </select>
                 </div>
                 <div class="col-12 col-md-8 col-sm-6 mb-2 ">
                     <label for="description">Book Description <span class="text-danger">*</span></label>
-                    <textarea  name="description" id="description" class="form-control"></textarea>
+                    <textarea name="description" id="description" class="form-control"><?=$data->book->description?></textarea>
                 </div>
                 <div class="col-12 col-md-8 col-sm-6">
                     <button class="btn btn-primary toggle-loader" type="submit"><i class="fas fa-save me-1"></i>Save</button>

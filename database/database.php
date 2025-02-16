@@ -174,4 +174,48 @@ class Database {
             Response::redirectToError(500);
         }
     }
+
+    public function storeBook($name, $author, $genre, $description){
+        try {
+            $stmt = $this->con->prepare("INSERT INTO books (name, author, genre_id, description) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$name, $author, $genre, $description]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function deleteBook($id) {
+        try {
+            $stmt = $this->con->prepare("DELETE FROM books WHERE id = ?");
+            $stmt->execute([$id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getBookById($id) {
+        try {
+            $stmt = $this->con->prepare("SELECT books.*, genres.name AS genre FROM books LEFT JOIN genres ON genres.id = books.genre_id WHERE books.id = ? ");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function updateBook($id, $name, $author, $genre, $description) {
+        try {
+            $stmt = $this->con->prepare("UPDATE books SET name = ?, author = ?, genre_id = ?, description = ? WHERE id = ?");
+            $stmt->execute([$name, $author, $genre, $description, $id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
 }

@@ -44,21 +44,21 @@ class BookController extends Controller {
             Middleware::isAuth(true);
     
             $req = $this->postRequest();
+
+            // optional check if can delete
     
-            Can::deleteGenre($this->db, $req->id);
-    
-            $res = $this->db->deleteGenre($req->id);
+            $res = $this->db->deleteBook($req->id);
             if(!$res) {
                 Response::redirectFail(
-                    APP_URL . "admin/genres",
+                    APP_URL . "admin/books",
                     500,
-                    "Unexpected error occured while deleting the genre."
+                    "Unexpected error occured while deleting the book."
                 );
             }
             Response::redirectSuccess(
-                APP_URL . "admin/genres",
+                APP_URL . "admin/books",
                 200,
-                "Genre deleted successfully"
+                "Book deleted successfully"
             );
         } catch (Exception $e) {
             Response::redirectToError(500);
@@ -70,18 +70,18 @@ class BookController extends Controller {
         try {
             Middleware::isAuth(true);
             $req = $this->postRequest();
-            $res = $this->db->storeGenre($req->name, $req->code, $req->description);
+            $res = $this->db->storeBook($req->name, $req->author, $req->genre, $req->description);
             if(!$res) {
                 Response::redirectFail(
-                    APP_URL . "admin/genres/create",
+                    APP_URL . "admin/books/create",
                     500,
-                    "Unexpected error occured while saving the genre."
+                    "Unexpected error occured while saving the book."
                 );
             }
             Response::redirectSuccess(
-                APP_URL . "admin/genres",
+                APP_URL . "admin/books",
                 200,
-                "Genre created successfully"
+                "Book created successfully"
             );
         } catch (Exception $e) {
             Response::redirectToError(500);
@@ -95,10 +95,10 @@ class BookController extends Controller {
     
             $req = $this->getRequest();
     
-            $genre = $this->db->getGenreById($req->id);
+            $book = $this->db->getBookById($req->id);
     
-            Response::view("admin/genres/edit", [
-                "genre" => $genre
+            Response::view("admin/books/edit", [
+                "book" => $book
             ]);
         } catch (Exception $e) {
             Response::redirectToError(500);
@@ -112,18 +112,18 @@ class BookController extends Controller {
     
             $req = $this->postRequest();
     
-            $res = $this->db->updateGenre($req->id, $req->name, $req->code, $req->description);
+            $res = $this->db->updateBook($req->id, $req->name, $req->author, $req->genre, $req->description);
             if(!$res) {
                 Response::redirectFail(
-                    APP_URL . "admin/genres/edit/" . $req->id,
+                    APP_URL . "admin/books/edit/" . $req->id,
                     500,
-                    "Unexpected error occured while updating the genre."
+                    "Unexpected error occured while updating the book."
                 );
             }
             Response::redirectSuccess(
-                APP_URL . "admin/genres",
+                APP_URL . "admin/books",
                 200,
-                "Genre updated successfully"
+                "Book updated successfully"
             );
 
         } catch (Exception $e) {
