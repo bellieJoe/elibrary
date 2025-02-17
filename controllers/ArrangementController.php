@@ -41,7 +41,15 @@ class ArrangementController extends Controller {
         try {
             Middleware::isAuth(true);
             $req = $this->postRequest();
-            $res = $this->db->storeArrangement($req->name, $req->description, "test", $req->shelves);
+            if (!isset($_FILES["map"]) || $_FILES["map"]["error"] !== UPLOAD_ERR_OK) {
+                Response::redirectFail(APP_URL . "admin/shelves/arrangements", 400, "No file uploaded or upload error");
+            }
+            $file = $_FILES["map"];
+            $filename = $this->saveFile($file, "uploads/maps/");
+            if(!$filename) {
+                Response::redirectFail(APP_URL . "admin/shelves/arrangements", 500, "Failed to upload file");
+            }
+            $res = $this->db->storeArrangement($req->name, $req->description, $filename, $req->shelves);
             if(!$res) {
                 Response::redirectFail( APP_URL . "admin/shelves/arrangements/create", 500, "Failed to create Arrangement");
             }
@@ -51,4 +59,39 @@ class ArrangementController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function view(){
+        try {
+            Middleware::isAuth(true);
+            $req = $this->getRequest();
+            $shelves = $this->db->getShelvesByArrangementId($req->id);
+            Response::view("admin/arrangements/view", [
+                "shelves" => $shelves
+            ]);
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
+
+    public function changeMap(){
+        try {
+            Middleware::isAuth(true);
+            $req = $this->postRequest();
+            $file = $_FILES["map"];
+            $filename = $this->saveFile($file, "uploads/maps/");
+            if(!$filename) {
+                Response::redirectFail(APP_URL . "admin/shelves/arrangements/view?id=" . $req->id, 500, "Failed to upload file");
+            }
+            $res = $this->db->changeMap($req->id, $filename);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/arrangements/view?id=" . $req->id, 500, "Failed to change map");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/arrangements/view?id=" . $req->id, 200, "Map changed successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
+
 }

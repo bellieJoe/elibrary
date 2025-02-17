@@ -262,7 +262,7 @@ class Database {
     public function paginateArrangement($name = "", $page = 1, $limit = 10, $sortBy = null, $sort = null) {
         try {
             $q = "
-            SELECT arrangements.id, arrangements.name, arrangements.description, arrangements.is_active, COUNT(shelves.id) AS shelve_count FROM arrangements
+            SELECT arrangements.id, arrangements.name, arrangements.description, arrangements.map, arrangements.is_active, COUNT(shelves.id) AS shelve_count FROM arrangements
             LEFT JOIN shelves ON shelves.arrangement_id = arrangements.id 
             WHERE arrangements.name LIKE ? 
             GROUP BY arrangements.id
@@ -283,6 +283,61 @@ class Database {
             $stmt->execute();
             
             return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function changeMap($id, $map) {
+        try {
+            $stmt = $this->con->prepare("UPDATE arrangements SET map = ? WHERE id = ?");
+            $stmt->execute([$map, $id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getArrangementById($id) {
+        try {
+            $stmt = $this->con->prepare("SELECT * FROM arrangements WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    /**
+     * SHELVES
+     */
+    public function getShelvesByArrangementId($id) {
+        try {
+            $stmt = $this->con->prepare("
+            SELECT shelves.id, shelves.name, shelves.arrangement_id, shelves.is_active, arrangements.map as map, arrangements.name AS arrangement FROM shelves 
+            LEFT JOIN arrangements ON arrangements.id = shelves.arrangement_id
+            WHERE arrangement_id = ?
+            ");
+            $stmt->execute([$id]);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function deleteShelve($id) {
+        try {
+            $this->con->beginTransaction();
+            $stmt = $this->con->prepare("DELETE FROM shelves WHERE id = ?");
+            $stmt->execute([$id]);
+            $stmt2 = $this->con->prepare("DELETE FROM locations WHERE shelve_id = ?");
+            $stmt2->execute([$id]);
+            $this->con->commit();
+            return true;
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);

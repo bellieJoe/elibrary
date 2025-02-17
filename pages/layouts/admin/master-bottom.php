@@ -19,6 +19,7 @@
         <?php include (ROOT_PATH.'pages/components/confirmToggle.php'); ?>
         <?php include (ROOT_PATH.'pages/components/sortModal.php'); ?>
         <?php include (ROOT_PATH.'pages/components/filterModal.php'); ?>
+        <?php include (ROOT_PATH.'pages/components/viewImage.php'); ?>
         
         
     </body>

@@ -1,6 +1,6 @@
 <?php include (ROOT_PATH.'pages/layouts/admin/master-top.php'); ?>
 
-<h1 class="mt-4">Genres</h1>
+<h1 class="mt-4">Arrangements</h1>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item">
         <a href="<?=APP_URL?>admin/shelves/arrangements">Arrangements</a>
@@ -18,7 +18,7 @@
     </div>
     
     <div class="card-body">
-        <form action="<?=APP_URL?>admin/shelves/arrangements/store" method="post">
+        <form action="<?=APP_URL?>admin/shelves/arrangements/store" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-12 col-md-4">
                     <div class="mb-2">
@@ -27,7 +27,7 @@
                     </div>
                     <div class="mb-2">
                         <label for="name">Library Map <span class="text-danger">*</span></label>
-                        <input type="file" name="map" id="map" class="form-control" required>
+                        <input type="file" accept=".jpg, .jpeg, .png" name="map" id="map" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label for="description">Description <span class="text-danger">*</span></label>

@@ -53,15 +53,19 @@ $response = Response::getData();
                 <div class="row justify-content-start">
                     <?php foreach($response->arrangements as $key => $value): ?>
                         <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-                            <div class="card">
+                            <div class="card mb-3">
                                 <div class="card-body">
                                     <h5><?=$value->name?></h5>
                                     <p><?=$value->description ? $value->description : '<span class="text-secondary">No Description</span>'?></p>
-                                    <p><span class="badge text-bg-primary"><?=$value->shelve_count?> Shelves</span></p>
+                                    <p>
+                                        <span class="badge text-bg-primary"><?=$value->shelve_count?> Shelves</span>
+                                        <span class="badge text-bg-<?=$value->is_active ? 'success' : 'secondary'?>"><?=$value->is_active == 1 ? 'Active' : 'Inactive'?></span>
+                                    </p>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-end">
-                                        <button class="btn btn-sm btn-primary toggle-loader"><i class="fas fa-eye me-1"></i>View</button>
+                                        <button class="btn btn-sm btn-outline-primary me-2" onclick="viewImage(`<?=APP_URL.'uploads/maps/'.$value->map?>`)"><i class="fas fa-map me-1"></i>Map</button>
+                                        <a class="btn btn-sm btn-primary toggle-loader" href="<?=APP_URL."admin/shelves/arrangements/view?id=".$value->id?>"><i class="fas fa-eye me-1"></i>View</a>
                                     </div>
                                 </div>
                             </div>
