@@ -311,6 +311,32 @@ class Database {
         }
     }
 
+    public function deleteArrangement($id) {
+        try {
+            $this->con->beginTransaction();
+            $stmt = $this->con->prepare("DELETE FROM arrangements WHERE id = ?");
+            $stmt2 = $this->con->prepare("SELECT id FROM shelves WHERE arrangement_id = ?");
+            $stmt2->execute([$id]);
+            $shelves = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            $shelves_id = array_map(function($arr) {
+                return $arr['id'];
+            }, $shelves);
+            if (!empty($shelves_id)) {
+                $placeholders = implode(',', array_fill(0, count($shelves_id), '?'));
+                $stmt3 = $this->con->prepare("DELETE FROM locations WHERE shelve_id IN ($placeholders)");
+                $stmt3->execute($shelves_id);
+            }
+            $stmt->execute([$id]);
+            $this->con->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->con->rollBack();
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+    
+
     /**
      * SHELVES
      */
@@ -339,8 +365,22 @@ class Database {
             $this->con->commit();
             return true;
         } catch (PDOException $e) {
+            $this->con->rollBack();
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);
         }
     }
+
+    public function createShelve($arrangement_id, $name){
+        try {
+            $stmt = $this->con->prepare("INSERT INTO shelves (name, arrangement_id) VALUES(?,?);");
+            $stmt->execute([$name, $arrangement_id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+
 }

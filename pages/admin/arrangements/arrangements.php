@@ -65,6 +65,11 @@ $response = Response::getData();
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-end">
                                         <button class="btn btn-sm btn-outline-primary me-2" onclick="viewImage(`<?=APP_URL.'uploads/maps/'.$value->map?>`)"><i class="fas fa-map me-1"></i>Map</button>
+                                        <button 
+                                            class="btn btn-sm btn-danger toggle-loader me-2" 
+                                            onclick="confirmDelete(`<?=APP_URL.'admin/shelves/arrangements/delete'?>`, <?=$value->id?>, 'This action is irreversible. Are you sure you want to delete this arrangement? ')">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
                                         <a class="btn btn-sm btn-primary toggle-loader" href="<?=APP_URL."admin/shelves/arrangements/view?id=".$value->id?>"><i class="fas fa-eye me-1"></i>View</a>
                                     </div>
                                 </div>

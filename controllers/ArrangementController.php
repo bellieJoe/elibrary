@@ -65,8 +65,10 @@ class ArrangementController extends Controller {
             Middleware::isAuth(true);
             $req = $this->getRequest();
             $shelves = $this->db->getShelvesByArrangementId($req->id);
+            $arrangement = $this->db->getArrangementById($req->id);
             Response::view("admin/arrangements/view", [
-                "shelves" => $shelves
+                "shelves" => $shelves,
+                "arrangement" => $arrangement
             ]);
         } catch (Exception $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
@@ -94,4 +96,18 @@ class ArrangementController extends Controller {
         }
     }
 
+    public function delete(){
+        try {
+            Middleware::isAuth(true);
+            $req = $this->postRequest();
+            $res = $this->db->deleteArrangement($req->id);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/arrangements", 500, "Failed to delete Arrangement");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/arrangements", 200, "Arrangement deleted successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);    
+            Response::redirectToError(500); 
+        }
+    }
 }

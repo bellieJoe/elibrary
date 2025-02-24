@@ -23,4 +23,19 @@ class ShelveController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function create() {
+        try {
+            $req = $this->postRequest();
+            $res = $this->db->createShelve($req->arrangement_id, $req->name);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/arrangements/view?id=".$req->arrangement_id, 500, "Failed to create Shelve");
+            }
+
+            Response::redirectSuccess( APP_URL . "admin/shelves/arrangements/view?id=".$req->arrangement_id, 200, "Shelve created successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
 }

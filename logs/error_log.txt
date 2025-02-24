@@ -25,3 +25,4 @@
 [2025-02-16 14:44:55] ERROR: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\elibrary\database\database.php on line 287
 [2025-02-16 14:44:55] ERROR: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\elibrary\database\database.php on line 287
 [2025-02-17 12:15:13] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'LEFT JOIN arrangements ON arrangements.id = shelves.arrangement_id' at line 2 in C:\xampp\htdocs\elibrary\database\database.php on line 304
+[2025-02-24 15:04:40] ERROR: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'arrangement_id' cannot be null in C:\xampp\htdocs\elibrary\database\database.php on line 380

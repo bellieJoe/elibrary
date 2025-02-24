@@ -68,6 +68,9 @@ switch ($uri) {
     case "admin/shelves/delete":
         $shelveController->delete();
         break;
+    case "admin/shelves/create":
+        $shelveController->create();
+        break;
     case "admin/shelves/arrangements":
         $arrangementController->index();
         break;
@@ -79,6 +82,9 @@ switch ($uri) {
         break;
     case "admin/shelves/arrangements/view":
         $arrangementController->view();
+        break;
+    case "admin/shelves/arrangements/delete":
+        $arrangementController->delete();
         break;
     case "admin/shelves/arrangements/change-map":
         $arrangementController->changeMap();
