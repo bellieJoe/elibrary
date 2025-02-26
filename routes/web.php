@@ -71,6 +71,12 @@ switch ($uri) {
     case "admin/shelves/create":
         $shelveController->create();
         break;
+    case "admin/shelves/update":
+        $shelveController->update();
+        break;
+    case "admin/shelves/books":
+        $shelveController->books();
+        break;
     case "admin/shelves/arrangements":
         $arrangementController->index();
         break;
@@ -145,6 +151,9 @@ switch ($uri) {
      */
     case "api/genres/search":
         $genreController->search();
+        break;
+    case "api/arrangements/books/unassigned":
+        $arrangementController->apiUnassignedBooks();
         break;
 
 

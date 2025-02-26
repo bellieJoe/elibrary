@@ -231,6 +231,28 @@ class Database {
         }
     }
 
+    public function getUnassignedBooks($arrangement_id, $search) {
+        try {
+            $stmt = $this->con->prepare("
+            SELECT `books`.*, `genres`.`name` as `genre` FROM `books` 
+            LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+            LEFT JOIN `shelves` ON `locations`.`shelve_id` = `shelves`.`id`
+            LEFT JOIN `arrangements` ON `arrangements`.`id` = `shelves`.`arrangement_id`
+            LEFT JOIN `genres` ON `genres`.`id` = `books`.`genre_id`
+            WHERE `locations`.`id` IS NULL AND `arrangements`.`id` <> ?
+            OR `books`.`name` LIKE ?
+            ORDER BY `books`.`genre_id`
+            ");
+            $stmt->bindValue(1, $arrangement_id, PDO::PARAM_INT);
+            $stmt->bindValue(2, "%$search%", PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
     /**
      * ARRANGEMENTS
      */
@@ -382,5 +404,37 @@ class Database {
         }
     }
 
+    public function updateShelve($id, $name) {
+        try {
+            $stmt = $this->con->prepare("UPDATE shelves SET name = ? WHERE id = ?");
+            $stmt->execute([$name, $id]);
+            return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getShelveBooks($id) {
+        try {
+            $stmt = $this->con->prepare("SELECT * FROM locations LEFT JOIN books ON locations.book_id = books.id WHERE locations.shelve_id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getShelve($id) {
+        try {
+            $stmt = $this->con->prepare("SELECT * FROM shelves WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
 
 }

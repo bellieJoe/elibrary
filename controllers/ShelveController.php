@@ -38,4 +38,33 @@ class ShelveController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function update() {
+        try {
+            $req = $this->postRequest();
+            $res = $this->db->updateShelve($req->id, $req->name);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/arrangements/view?id=".$req->arrangement_id, 500, "Failed to update Shelve");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/arrangements/view?id=".$req->arrangement_id, 200, "Shelve updated successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
+
+    public function books() {
+        try {
+            $req = $this->getRequest();
+            $books = $this->db->getShelveBooks($req->id);
+            $shelve = $this->db->getShelve($req->id);
+            Response::view("admin/shelves/books", [
+                "books" => $books,
+                "shelve" => $shelve
+            ]);
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
 }

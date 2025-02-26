@@ -110,4 +110,18 @@ class ArrangementController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function apiUnassignedBooks(){
+        try {
+            Middleware::isAuth(true);
+            $req = $this->getRequest();
+            $arrangement_id = $req->arrangement_id;
+            $search = $req->search;
+            $books = $this->db->getUnassignedBooks($arrangement_id, $search);
+            Response::view("components/forms/selectBooks", ["books" => $books]);
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
 }
