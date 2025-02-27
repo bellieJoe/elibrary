@@ -57,16 +57,17 @@
 </div>
 
 <div id="addBooksModal" class="modal fade">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <form action="<?=APP_URL?>admin/shelves/assign-books" method="post" class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add Books</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <input type="hidden" name="shelve_id" value="<?=$data->shelve->id?>">
                 <div class="input-group mb-3">
                     <label for="search" class="input-group-text">Search</label>
-                    <input type="search" name="search" id="search" class="form-control">
+                    <input type="search" name="search" id="search" oninput="searchBooks(this.value)" placeholder="Search Books, Genres" class="form-control">
                 </div>
 
                 <div class="mb-2" id="books"></div>
@@ -76,7 +77,7 @@
                 <button type="submit" class="btn btn-primary toggle-loader" type="submit">Save</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 
 

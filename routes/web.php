@@ -77,6 +77,9 @@ switch ($uri) {
     case "admin/shelves/books":
         $shelveController->books();
         break;
+    case "admin/shelves/assign-books":
+        $shelveController->assignBooks();
+        break;
     case "admin/shelves/arrangements":
         $arrangementController->index();
         break;

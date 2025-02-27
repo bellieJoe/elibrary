@@ -234,17 +234,26 @@ class Database {
     public function getUnassignedBooks($arrangement_id, $search) {
         try {
             $stmt = $this->con->prepare("
-            SELECT `books`.*, `genres`.`name` as `genre` FROM `books` 
+            SELECT 
+                `books`.*, 
+                `genres`.`name` AS `genre`, 
+                `locations`.`id` AS `location_id`, 
+                `arrangements`.`id` AS `arra_id`
+            FROM `books` 
             LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
             LEFT JOIN `shelves` ON `locations`.`shelve_id` = `shelves`.`id`
             LEFT JOIN `arrangements` ON `arrangements`.`id` = `shelves`.`arrangement_id`
             LEFT JOIN `genres` ON `genres`.`id` = `books`.`genre_id`
-            WHERE `locations`.`id` IS NULL AND `arrangements`.`id` <> ?
-            OR `books`.`name` LIKE ?
-            ORDER BY `books`.`genre_id`
+            WHERE 
+                (`locations`.`id` IS NULL OR `shelves`.`id` IS NULL) 
+                AND (`arrangements`.`id` IS NULL OR `arrangements`.`id` <> ?)
+                AND (`books`.`name` LIKE ? OR `genres`.`name` LIKE ?)
+                AND `books`.`is_active` = 1
+            ORDER BY `books`.`genre_id` ASC, `books`.`name` ASC;
             ");
             $stmt->bindValue(1, $arrangement_id, PDO::PARAM_INT);
             $stmt->bindValue(2, "%$search%", PDO::PARAM_STR);
+            $stmt->bindValue(3, "%$search%", PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
@@ -252,6 +261,7 @@ class Database {
             Response::redirectToError(500);
         }
     }
+
 
     /**
      * ARRANGEMENTS
@@ -431,6 +441,30 @@ class Database {
             $stmt = $this->con->prepare("SELECT * FROM shelves WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    /**
+     *  LOCATIONS
+    */
+    public function assignBooksToShelve($shelve_id, $book_ids){
+        try {
+            $this->con->beginTransaction();
+
+            $placeholders = implode(',', array_fill(0, count($book_ids), '(?, ?)'));
+            $values = [];
+            foreach ($book_ids as $book) {
+                $values[] = $shelve_id;
+                $values[] = $book;
+            }
+            $stmt = $this->con->prepare("INSERT INTO locations (shelve_id, book_id) VALUES $placeholders");
+            $stmt->execute($values);
+
+            $this->con->commit();
+            return true;
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);

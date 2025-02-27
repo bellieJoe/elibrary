@@ -67,4 +67,20 @@ class ShelveController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function assignBooks(){
+        try {
+            $req = $this->postRequest();
+            $book_ids = array_keys($req->books);
+            $res = $this->db->assignBooksToShelve($req->shelve_id, $book_ids);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/books?id=".$req->shelve_id, 500, "Failed to assign books to shelve");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/books?id=".$req->shelve_id, 200, "Books assigned successfully");
+           
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
 }
