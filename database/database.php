@@ -367,6 +367,22 @@ class Database {
             Response::redirectToError(500);
         }
     }
+
+    public function activateArrangement($id){
+        try {
+            $this->con->beginTransaction();
+            $stmt = $this->con->prepare("UPDATE arrangements SET is_active = 0");
+            $stmt->execute();
+            $stmt = $this->con->prepare("UPDATE arrangements SET is_active = 1 WHERE id = ?");
+            $stmt->execute([$id]);
+            $this->con->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->con->rollBack();
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);   
+        }
+    }
     
 
     /**
@@ -427,7 +443,7 @@ class Database {
 
     public function getShelveBooks($id) {
         try {
-            $stmt = $this->con->prepare("SELECT * FROM locations LEFT JOIN books ON locations.book_id = books.id WHERE locations.shelve_id = ?");
+            $stmt = $this->con->prepare("SELECT locations.*, books.name, books.is_active FROM locations LEFT JOIN books ON locations.book_id = books.id WHERE locations.shelve_id = ?");
             $stmt->execute([$id]);
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
@@ -441,6 +457,17 @@ class Database {
             $stmt = $this->con->prepare("SELECT * FROM shelves WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function removeBookFromShelve($id) {
+        try {
+            $stmt = $this->con->prepare("DELETE FROM locations WHERE id = ?");
+            $stmt->execute([$id]);
+            return true;
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);
@@ -465,6 +492,17 @@ class Database {
 
             $this->con->commit();
             return true;
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getLocationById($id) {
+        try {
+            $stmt = $this->con->prepare("SELECT * FROM locations WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);

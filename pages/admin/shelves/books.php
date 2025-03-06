@@ -34,7 +34,7 @@
                 <tbody>
                     <?php foreach($data->books as $key => $value): ?>
                         <tr>
-                            <td class="text-center"><?=$value->id?></td>
+                            <td class="text-center"><?=$key+1?></td>
                             <td><?=$value->name?></td>
                             <td class="text-center">
                                 <span class="badge text-bg-<?=$value->is_active ? 'success' : 'danger'?>">
@@ -42,6 +42,9 @@
                                 </span>
                             </td>
                             <td class="text-center">
+                                <button class="btn btn-sm btn-danger" onclick="confirmDelete('<?=APP_URL?>admin/shelves/books/remove', '<?=$value->id?>', 'Are you sure you want to remove this book?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

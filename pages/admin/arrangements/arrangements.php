@@ -64,6 +64,9 @@ $response = Response::getData();
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-end">
+                                        <?php if($value->is_active == 0): ?>
+                                            <button class="btn btn-sm btn-outline-primary me-2" onclick="showActivateArrangementModal(<?=$value->id?>)"><i class="fas fa-toggle-on me-1"></i>Activate</button>
+                                        <?php endif ?>
                                         <button class="btn btn-sm btn-outline-primary me-2" onclick="viewImage(`<?=APP_URL.'uploads/maps/'.$value->map?>`)"><i class="fas fa-map me-1"></i>Map</button>
                                         <button 
                                             class="btn btn-sm btn-danger toggle-loader me-2" 
@@ -84,4 +87,38 @@ $response = Response::getData();
     </div>
 </div>
 
+<div class="modal fade" id="activateArrangementModal">
+    <form method="POST" class="modal-dialog" action="<?=APP_URL?>admin/shelves/arrangements/activate">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Activate Arrangement
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="id" id="id">
+                <p>Are you sure you want to activate this arrangement? This action is irreversible. The previously active arrangement will be deactivated.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary toggle-loader" type="submit">Activate</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 <?php include (ROOT_PATH.'pages/layouts/admin/master-bottom.php'); ?>
+
+<script>
+    $(document).ready(function() {
+        
+    });
+
+    function showActivateArrangementModal(id) {
+        $modal = $("#activateArrangementModal");
+        $modal.find("#id").val(id);
+        $modal.modal("show");
+    }
+</script>
+

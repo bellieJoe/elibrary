@@ -124,4 +124,19 @@ class ArrangementController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function activate(){
+        try {
+            Middleware::isAuth(true);
+            $req = $this->postRequest();
+            $res = $this->db->activateArrangement($req->id);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/arrangements", 500, "Failed to activate Arrangement");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/arrangements", 200, "Arrangement activated successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500); 
+        }
+    }
 }

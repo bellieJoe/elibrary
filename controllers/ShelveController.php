@@ -83,4 +83,19 @@ class ShelveController extends Controller {
             Response::redirectToError(500); 
         }
     }
+
+    public function removeBook(){
+        try {
+            $req = $this->postRequest();
+            $location = $this->db->getLocationById($req->id);
+            $res = $this->db->removeBookFromShelve($req->id);
+            if(!$res) {
+                Response::redirectFail( APP_URL . "admin/shelves/books?id=".$location->shelve_id, 500, "Failed to remove book from shelve");
+            }
+            Response::redirectSuccess( APP_URL . "admin/shelves/books?id=".$location->shelve_id, 200, "Book removed successfully");
+        } catch (Exception $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
 }
