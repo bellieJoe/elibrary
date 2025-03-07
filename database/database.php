@@ -509,4 +509,144 @@ class Database {
         }
     }
 
+    /**
+     * DASHBOARD QUERIES
+     */
+    public function countBooks(){
+        try {
+            $stmt = $this->con->prepare("SELECT COUNT(*) AS count FROM books WHERE is_active = 1");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function countShelves(){
+        try {
+            $stmt = $this->con->prepare("SELECT COUNT(*) AS count FROM shelves WHERE is_active = 1");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function countArrangements(){
+        try {
+            $stmt = $this->con->prepare("SELECT COUNT(*) AS count FROM arrangements");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function countGenres(){
+        try {
+            $stmt = $this->con->prepare("SELECT COUNT(*) AS count FROM genres WHERE is_active = 1");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ); // Fetch as object
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function countUnassignedBooks()
+    {
+        try {
+            // Fetch active arrangement
+            $stmt = $this->con->prepare("SELECT * FROM `arrangements` WHERE `is_active` = 1 LIMIT 1;");
+            $stmt->execute();
+            $arrangement = $stmt->fetch(PDO::FETCH_OBJ);
+
+            if (!$arrangement) {
+                return 0; // No active arrangement found, return 0
+            }
+
+            // Fetch active shelves for the arrangement
+            $stmt = $this->con->prepare("SELECT id FROM `shelves` WHERE `is_active` = 1 AND `arrangement_id` = ?;");
+            $stmt->execute([$arrangement->id]);
+            $shelves = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            if (empty($shelves)) {
+                return 0; // No shelves found, return 0
+            }
+
+            // Generate placeholders for `IN (?)`
+            $placeholders = implode(',', array_fill(0, count($shelves), '?'));
+
+            // Prepare and execute the query for counting unassigned books
+            $stmt = $this->con->prepare("
+                SELECT COUNT(*) AS count FROM `books` 
+                LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+                WHERE 
+                    (`locations`.`shelve_id` NOT IN ($placeholders) OR
+                    `locations`.`id` IS NULL) AND
+                    `books`.`is_active` = 1;
+            ");
+            
+            $stmt->execute($shelves);
+            return $stmt->fetch(PDO::FETCH_OBJ);
+            
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function countUnassignedBooksByArrangementId($id)
+    {
+        try {
+            // Fetch active arrangement
+            $stmt = $this->con->prepare("SELECT id FROM `arrangements` WHERE `id` = ? AND `is_active` = 1 LIMIT 1;");
+            $stmt->execute([$id]);
+            $arrangement = $stmt->fetch(PDO::FETCH_OBJ);
+
+            if (!$arrangement) {
+                return 0; // No active arrangement found, return 0
+            }
+
+            // Fetch active shelves for the arrangement
+            $stmt = $this->con->prepare("SELECT id FROM `shelves` WHERE `is_active` = 1 AND `arrangement_id` = ?;");
+            $stmt->execute([$arrangement->id]);
+            $shelves = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            if (empty($shelves)) {
+                // If no shelves exist, count all books with no assigned location
+                $stmt = $this->con->prepare("
+                    SELECT COUNT(*) AS count FROM `books` 
+                    LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+                    WHERE `locations`.`id` IS NULL AND `books`.`is_active` = 1;
+                ");
+                $stmt->execute();
+                return $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
+            }
+
+            // Generate placeholders for `IN (?)`
+            $placeholders = implode(',', array_fill(0, count($shelves), '?'));
+
+            // Prepare and execute the query for counting unassigned books
+            $stmt = $this->con->prepare("
+                SELECT COUNT(*) AS count FROM `books` 
+                LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+                WHERE 
+                    (`locations`.`shelve_id` IS NULL OR `locations`.`shelve_id` NOT IN ($placeholders))
+                    AND `books`.`is_active` = 1;
+            ");
+            
+            $stmt->execute($shelves);
+            return $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
+            
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+
 }

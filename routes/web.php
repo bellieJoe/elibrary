@@ -5,12 +5,16 @@ require_once ROOT_PATH . "controllers/AuthController.php";
 require_once ROOT_PATH . "controllers/BookController.php";
 require_once ROOT_PATH . "controllers/ArrangementController.php";
 require_once ROOT_PATH . "controllers/ShelveController.php";
+require_once ROOT_PATH . "controllers/AdminController.php";
+require_once ROOT_PATH . "controllers/SearchController.php";
 
 $genreController = new GenreController();
 $authController = new AuthController();
 $bookController = new BookController();
 $arrangementController = new ArrangementController();
 $shelveController = new ShelveController();
+$adminController = new AdminController();
+$searchController = new SearchController();
 
 // // Get the current request URI
 // $requestUri = trim($_SERVER['REQUEST_URI'], '/');
@@ -31,7 +35,7 @@ $uri = str_replace("$projectFolder/", "", $requestUri);
 switch ($uri) {
     case "":
     case null:
-        include __DIR__ . "/../pages/index.php";
+        $searchController->index();
         break;
     case 'search':
         include __DIR__ . "/../pages/"."$uri".".php";
@@ -42,7 +46,7 @@ switch ($uri) {
 
     case "admin":
         Middleware::isAuth(true);
-        include __DIR__ . "/../pages/admin/dashboard.php";
+        $adminController->dashboard();
         break;
 
     /**
@@ -52,6 +56,7 @@ switch ($uri) {
         $authController->login();
         break;
     case "logout":
+        Middleware::isAuth(true);
         $authController->logout();
         break;
     case "tryLogin":

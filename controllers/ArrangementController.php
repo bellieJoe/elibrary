@@ -66,9 +66,11 @@ class ArrangementController extends Controller {
             $req = $this->getRequest();
             $shelves = $this->db->getShelvesByArrangementId($req->id);
             $arrangement = $this->db->getArrangementById($req->id);
+            $unassigned = $this->db->countUnassignedBooksByArrangementId($req->id);
             Response::view("admin/arrangements/view", [
                 "shelves" => $shelves,
-                "arrangement" => $arrangement
+                "arrangement" => $arrangement,
+                "unassigned" => $unassigned
             ]);
         } catch (Exception $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);

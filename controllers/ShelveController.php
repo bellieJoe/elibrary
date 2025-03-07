@@ -58,9 +58,11 @@ class ShelveController extends Controller {
             $req = $this->getRequest();
             $books = $this->db->getShelveBooks($req->id);
             $shelve = $this->db->getShelve($req->id);
+            $unassigned = $this->db->countUnassignedBooksByArrangementId($shelve->arrangement_id);
             Response::view("admin/shelves/books", [
                 "books" => $books,
-                "shelve" => $shelve
+                "shelve" => $shelve,
+                "unassigned" => $unassigned
             ]);
         } catch (Exception $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
