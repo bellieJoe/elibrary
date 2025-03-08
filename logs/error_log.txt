@@ -33,3 +33,9 @@
 [2025-02-27 14:00:23] ERROR: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'genre' in 'where clause' in C:\xampp\htdocs\elibrary\database\database.php on line 253
 [2025-02-27 14:00:25] ERROR: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'genre' in 'where clause' in C:\xampp\htdocs\elibrary\database\database.php on line 253
 [2025-02-27 14:00:28] ERROR: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'genre' in 'where clause' in C:\xampp\htdocs\elibrary\database\database.php on line 253
+[2025-03-08 14:29:07] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''0', '10'' at line 11 in C:\xampp\htdocs\elibrary\database\database.php on line 695
+[2025-03-08 14:30:25] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''0', '10'' at line 11 in C:\xampp\htdocs\elibrary\database\database.php on line 720
+[2025-03-08 14:30:26] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''0', '10'' at line 11 in C:\xampp\htdocs\elibrary\database\database.php on line 720
+[2025-03-08 14:31:29] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723
+[2025-03-08 14:31:30] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723
+[2025-03-08 14:31:30] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723

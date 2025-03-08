@@ -648,5 +648,86 @@ class Database {
         }
     }
 
-
+    public function search($search, $page = 1, $limit = 10) {
+        try {
+            // Fetch active arrangement
+            $stmt = $this->con->prepare("SELECT id FROM `arrangements` WHERE `is_active` = 1 LIMIT 1;");
+            $stmt->execute();
+            $arrangement = $stmt->fetch(PDO::FETCH_OBJ);
+    
+            if (!$arrangement) {
+                return []; // No active arrangement found, return empty result
+            }
+    
+            // Fetch active shelves for the arrangement
+            $stmt = $this->con->prepare("SELECT id FROM `shelves` WHERE `is_active` = 1 AND `arrangement_id` = ?;");
+            $stmt->execute([$arrangement->id]);
+            $shelves = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+            // If no shelves exist, count all books with no assigned location
+            if (empty($shelves)) {
+                $stmt = $this->con->prepare("
+                    SELECT COUNT(*) AS count FROM `books` 
+                    LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+                    WHERE `locations`.`id` IS NULL AND `books`.`is_active` = 1;
+                ");
+                $stmt->execute();
+                return $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
+            }
+    
+            // Create named placeholders like :shelf1, :shelf2, :shelf3
+            $shelfPlaceholders = [];
+            $shelfParams = [];
+            foreach ($shelves as $index => $shelf) {
+                $paramName = ":shelf" . $index;
+                $shelfPlaceholders[] = $paramName;
+                $shelfParams[$paramName] = $shelf;
+            }
+    
+            // Construct the SQL query
+            $sql = "
+                SELECT books.*, genres.name AS genre, locations.shelve_id AS shelve_id, shelves.name AS shelve_name 
+                FROM `books` 
+                LEFT JOIN `locations` ON `locations`.`book_id` = `books`.`id`
+                LEFT JOIN `shelves` ON `shelves`.`id` = `locations`.`shelve_id`
+                LEFT JOIN `genres` ON `genres`.`id` = `books`.`genre_id`
+                WHERE 
+                    `books`.`is_active` = 1
+                    AND (`books`.`name` LIKE :search
+                    OR `genres`.`name` LIKE :search
+                    OR `books`.`author` LIKE :search)
+            ";
+    
+            // If shelves exist, add condition to filter by shelf ID
+            if (!empty($shelves)) {
+                $sql .= " AND (`locations`.`shelve_id` IN (" . implode(',', $shelfPlaceholders) . "))";
+            }
+    
+            $sql .= " LIMIT :offset, :limit;";
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind shelf IDs
+            foreach ($shelfParams as $paramName => $value) {
+                $stmt->bindValue($paramName, $value, PDO::PARAM_INT);
+            }
+    
+            // Bind search parameters
+            $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+    
+            // Bind LIMIT and OFFSET
+            $offset = ($page - 1) * $limit;
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+    
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+    
+    
 }

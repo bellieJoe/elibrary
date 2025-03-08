@@ -9,7 +9,15 @@ class SearchController extends Controller {
 
     public function index(){
         try {
-            //code...
+            $req = $this->getRequest();
+            $_page = property_exists($req, "_page") ? $req->_page : 1;
+            $search = property_exists($req, "search") ? $req->search : "";
+
+            $books = $this->db->search($search);
+            Response::view("index", [
+                "books" => $books,
+                "_page" => $_page
+            ]);
         } catch (Exception $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500); 
