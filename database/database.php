@@ -117,7 +117,7 @@ class Database {
 
     public function searchGenre($keyword) {
         try {
-            $stmt = $this->con->prepare("SELECT *, name as text FROM genres WHERE name LIKE ? OR code LIKE ?");
+            $stmt = $this->con->prepare("SELECT *, name as text FROM genres WHERE (name LIKE ? OR code LIKE ?) AND is_active = 1");
             $stmt->execute(["%$keyword%", "%$keyword%"]);
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {

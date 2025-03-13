@@ -20,19 +20,22 @@ class SettingsController extends Controller {
     public function changePassword() {
         try {
             Middleware::isAuth(true);
-            $req = $this->getRequest();
+            $req = $this->postRequest();
             $user = $this->db->getUserByUsername("admin");
+
+            if(!$req->new_password_confirmation || !$req->new_password || $req->new_password !== $req->new_password_confirmation) {
+                Response::redirectFail(APP_URL . "admin/settings", 400, "Passwords do not match");
+            }
+
             if(!$user) {
                 Response::redirectFail(APP_URL . "admin/settings", 404, "User not found");
             }
             if(!password_verify($req->current_password, $user->password)) {
                 Response::redirectFail(APP_URL . "admin/settings", 400, "Current password is incorrect");
             }
-            if(!$req->current_password || !$req->new_password || $req->new_password !== $req->new_password_confirmation) {
-                Response::redirectFail(APP_URL . "admin/settings", 400, "Passwords do not match");
-            }
+            
 
-            if(!$this->db->changePassword($req->new_password)) {
+            if(!$this->db->changePassword(password_hash($req->new_password, PASSWORD_DEFAULT))) {
                 Response::redirectFail(APP_URL . "admin/settings", 500, "Failed to change password");
             }
             Response::redirectSuccess(APP_URL . "admin/settings", 200, "Password changed successfully");
