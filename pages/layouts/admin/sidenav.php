@@ -33,6 +33,11 @@
                     </nav>
                 </div>
 
+                <a class="nav-link" href="<?= APP_URL ?>admin/settings">
+                    <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                    Settings
+                </a>
+
                 <a class="nav-link" href="<?= APP_URL ?>logout">
                     <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                     Logout

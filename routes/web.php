@@ -7,6 +7,7 @@ require_once ROOT_PATH . "controllers/ArrangementController.php";
 require_once ROOT_PATH . "controllers/ShelveController.php";
 require_once ROOT_PATH . "controllers/AdminController.php";
 require_once ROOT_PATH . "controllers/SearchController.php";
+require_once ROOT_PATH . "controllers/SettingsController.php";
 
 $genreController = new GenreController();
 $authController = new AuthController();
@@ -15,6 +16,7 @@ $arrangementController = new ArrangementController();
 $shelveController = new ShelveController();
 $adminController = new AdminController();
 $searchController = new SearchController();
+$settingsController = new SettingsController();
 
 // // Get the current request URI
 // $requestUri = trim($_SERVER['REQUEST_URI'], '/');
@@ -47,6 +49,18 @@ switch ($uri) {
     case "admin":
         Middleware::isAuth(true);
         $adminController->dashboard();
+        break;
+
+    /**
+     * Settings
+     */
+    case "admin/settings":
+        Middleware::isAuth(true);
+        $settingsController->index();
+        break;
+    case "admin/settings/change-password":
+        Middleware::isAuth(true);
+        $settingsController->changePassword();
         break;
 
     /**

@@ -49,7 +49,7 @@
                             <td class="text-center"><?=$key+1?></td>
                             <td><?=$value->name?></td>
                             <td class="text-center">
-                                <!-- <span class="badge text-bg-primary"><?=$value->book_count?></span> -->
+                                <span class="badge text-bg-primary"><?=$value->books_count?></span>
                             </td>
                             <td class="text-center">
                                 <span class="badge text-bg-<?=$value->is_active ? 'success' : 'danger'?>">

@@ -26,6 +26,10 @@
             </div>
         </form>
 
+        <button class="btn btn-sm btn-primary" onclick="viewImage(`<?=APP_URL.'uploads/maps/'.$response->active_arrangement->map?>`)">
+             <i class="fas fa-map-marker-alt me-1"></i> Library Map
+        </button>
+
         <div class="table-responsive">
             <table class="table table-hover table-striped">
                 <thead>

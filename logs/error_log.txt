@@ -39,3 +39,7 @@
 [2025-03-08 14:31:29] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723
 [2025-03-08 14:31:30] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723
 [2025-03-08 14:31:30] ERROR: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters in C:\xampp\htdocs\elibrary\database\database.php on line 723
+[2025-03-12 14:40:40] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JOIN locations ON locations.shelve_id = shelves.id
+            WHERE arrange...' at line 3 in C:\xampp\htdocs\elibrary\database\database.php on line 414
+[2025-03-12 14:40:54] ERROR: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'JOIN locations ON locations.shelve_id = shelves.id
+            WHERE arrange...' at line 3 in C:\xampp\htdocs\elibrary\database\database.php on line 414

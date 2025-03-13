@@ -383,6 +383,17 @@ class Database {
             Response::redirectToError(500);   
         }
     }
+
+    public function getActiveArrangement() {
+        try {
+            $stmt = $this->con->prepare("SELECT * FROM arrangements WHERE is_active = 1");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ); 
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
     
 
     /**
@@ -391,9 +402,15 @@ class Database {
     public function getShelvesByArrangementId($id) {
         try {
             $stmt = $this->con->prepare("
-            SELECT shelves.id, shelves.name, shelves.arrangement_id, shelves.is_active, arrangements.map as map, arrangements.name AS arrangement FROM shelves 
-            LEFT JOIN arrangements ON arrangements.id = shelves.arrangement_id
-            WHERE arrangement_id = ?
+                SELECT shelves.id, shelves.name, shelves.arrangement_id, shelves.is_active, 
+                       arrangements.map AS map, arrangements.name AS arrangement, 
+                       COUNT(locations.id) AS books_count 
+                FROM shelves
+                LEFT JOIN arrangements ON arrangements.id = shelves.arrangement_id
+                LEFT JOIN locations ON locations.shelve_id = shelves.id
+                WHERE shelves.arrangement_id = ?
+                GROUP BY shelves.id, shelves.name, shelves.arrangement_id, shelves.is_active, 
+                         arrangements.map, arrangements.name
             ");
             $stmt->execute([$id]);
             return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -402,6 +419,7 @@ class Database {
             Response::redirectToError(500);
         }
     }
+    
 
     public function deleteShelve($id) {
         try {
@@ -723,6 +741,66 @@ class Database {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
     
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function getTopGenreChartData() {
+        try {
+            // Fetch top 5 genres
+            $stmt = $this->con->prepare("
+                SELECT genres.name AS genre, COUNT(*) AS count 
+                FROM books 
+                LEFT JOIN genres ON genres.id = books.genre_id 
+                WHERE books.is_active = 1 
+                GROUP BY genres.name 
+                ORDER BY count DESC 
+                LIMIT 5;
+            ");
+            $stmt->execute();
+            $topGenres = $stmt->fetchAll(PDO::FETCH_OBJ);
+    
+            // Fetch the count of remaining genres (others)
+            $stmt = $this->con->prepare("
+                SELECT COUNT(*) AS count 
+                FROM books 
+                LEFT JOIN genres ON genres.id = books.genre_id 
+                WHERE books.is_active = 1 
+                AND genres.name NOT IN (
+                    SELECT name FROM (
+                        SELECT genres.name 
+                        FROM books 
+                        LEFT JOIN genres ON genres.id = books.genre_id 
+                        WHERE books.is_active = 1 
+                        GROUP BY genres.name 
+                        ORDER BY COUNT(*) DESC 
+                        LIMIT 5
+                    ) AS top_genres
+                );
+            ");
+            $stmt->execute();
+            $othersCount = $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
+    
+            // Add "Others" category if there are remaining books
+            if ($othersCount > 0) {
+                $topGenres[] = (object) ['genre' => 'Others', 'count' => $othersCount];
+            }
+    
+            return $topGenres;
+    
+        } catch (PDOException $e) {
+            Misc::logError($e->getMessage(), __FILE__, __LINE__);
+            Response::redirectToError(500);
+        }
+    }
+
+    public function changePassword($password) {
+        try {
+            $stmt = $this->con->prepare("UPDATE users SET password = ? WHERE id = 1");
+            $stmt->execute([$password]);
+            return true;
         } catch (PDOException $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);
             Response::redirectToError(500);

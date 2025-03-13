@@ -14,11 +14,13 @@ class AdminController extends Controller {
             $genreCount = $this->db->countGenres();
             $arrangementCount = $this->db->countArrangements();
             $unassignedBooks = $this->db->countUnassignedBooks();
+            $topGenreData = $this->db->getTopGenreChartData();
             Response::view("admin/dashboard", [
                 "bookCount" => $bookCount,
                 "genreCount" => $genreCount,
                 "arrangementCount" => $arrangementCount,
-                "unassignedBooks" => $unassignedBooks
+                "unassignedBooks" => $unassignedBooks,
+                "topGenreData" => $topGenreData
             ]);
         } catch (Exception $e) {
             Misc::logError($e->getMessage(), __FILE__, __LINE__);

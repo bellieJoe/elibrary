@@ -6,7 +6,7 @@
         <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <img id="image"  class="img-fluid"></img>
+        <img id="image"  class="img-fluid w-100"></img>
       </div>
     </div>
   </div>
